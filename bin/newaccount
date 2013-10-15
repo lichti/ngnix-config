@@ -8,9 +8,14 @@ fi
 USER=$1
 
 if [ ! -d /home/$USER ] && [ -z $(grep "$USER:" /etc/passwd) ]; then
-        adduser $USER
+        #adduser $USER
+	useradd -m -s /bin/bash $USER
+	PORT=$(($(id -u $USER)+9000))
+	usermod -c "type=php,port=$PORT)" $USER
+	passwd $USER
 else
         echo "$USER already exists"
+	exit 1
 fi
 
 if [ ! -d /home/$USER/log ]; then
@@ -47,6 +52,25 @@ else
         echo "Exists /etc/nginx/sites-available/500-$USER"
 fi
 
+if [ ! -e  /etc/php5/fpm/pool.d/$USER.conf ]; then
+        echo "
+[www]
+user = $USER
+group = $USER
+listen = 127.0.0.1:$PORT
+pm = dynamic
+pm.max_children = 10
+pm.start_servers = 4
+pm.min_spare_servers = 2
+pm.max_spare_servers = 6
+chdir = /
+" >  /etc/php5/fpm/pool.d/$USER.conf
+        echo "Created  /etc/php5/fpm/pool.d/$USER.conf"
+else
+        echo "Exists  /etc/php5/fpm/pool.d/$USER.conf"
+fi
+
 gpasswd -a www-data $USER
 ln -s /etc/nginx/sites-available/500-$USER /etc/nginx/sites-enabled/500-$USER
 /etc/init.d/nginx reload
+/etc/init.d/php5-fpm reload

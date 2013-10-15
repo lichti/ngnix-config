@@ -7,6 +7,7 @@ fi
 
 USER=$1
 FQDN=$2
+PORT=$(($(id -u $USER)+9000))
 
 if [ ! -d /home/$USER ] && [ -z $(grep "$USER:" /etc/passwd) ]; then
   echo "This account does not exist"
@@ -51,7 +52,7 @@ server {
 	location ~ \.php$ {
 		try_files \$uri =404;
 		fastcgi_split_path_info ^(.+\.php)(/.+)\$;
-		fastcgi_pass 127.0.0.1:9000;
+		fastcgi_pass 127.0.0.1:$PORT;
 		fastcgi_index index.php;
 		include fastcgi_params;
 	}
