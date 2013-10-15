@@ -54,7 +54,7 @@ fi
 
 if [ ! -e  /etc/php5/fpm/pool.d/$USER.conf ]; then
         echo "
-[www]
+[$USER]
 user = $USER
 group = $USER
 listen = 127.0.0.1:$PORT
