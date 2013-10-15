@@ -1,0 +1,77 @@
+#!/bin/bash
+
+if [ -z $1 ] || [ -z $2 ]; then 
+  echo "Ex: command username fqdn"
+  exit 1
+fi
+
+USER=$1
+FQDN=$2
+
+if [ ! -d /home/$USER ] && [ -z $(grep "$USER:" /etc/passwd) ]; then
+  echo "This account does not exist"
+  echo "Use the command newaccount"
+  exit 1
+fi
+
+if [ ! -d /home/$USER/$FQDN/public ]; then
+        mkdir -p /home/$USER/$FQDN/public
+        echo "Created /home/$USER/$FQDN/public"
+else
+        echo "Exists /home/$USER/$FQDN/public"
+fi
+
+if [ ! -d /home/$USER/$FQDN/cgi-bin ]; then
+        mkdir -p /home/$USER/$FQDN/cgi-bin
+        echo "Created /home/$USER/$FQDN/cgi-bin"
+else
+        echo "Exists /home/$USER/$FQDN/cgi-bin"
+fi
+
+echo "Setting permissions"
+find /home/$USER/$FQDN -type d -exec chown $USER:$USER '{}' \;
+find /home/$USER/$FQDN -type f -exec chown $USER:$USER '{}' \;
+find /home/$USER/$FQDN -type d -exec chmod 770 '{}' \;
+find /home/$USER/$FQDN -type f -exec chmod 660 '{}' \;
+
+if [ ! -e /etc/nginx/sites.d/$USER/10-$FQDN.conf ]; then 
+echo "
+server { 
+	listen       80;
+	server_name  $FQDN;
+	access_log   /home/$USER/log/$FQDN.error.log  combined;
+	error_log    /home/$USER/log/$FQDN.access.log  warn;
+        root /home/$USER/$FQDN/public/;
+        index index.html index.htm index.php;
+
+	location / {
+		try_files \$uri \$uri/ /index.html;
+	}
+
+	location ~ \.php$ {
+		try_files \$uri =404;
+		fastcgi_split_path_info ^(.+\.php)(/.+)\$;
+		fastcgi_pass 127.0.0.1:9000;
+		fastcgi_index index.php;
+		include fastcgi_params;
+	}
+
+	location ~ /\.ht {
+		deny all;
+	}
+}
+" > /etc/nginx/sites.d/$USER/10-$FQDN.conf
+	echo "Created /etc/nginx/sites.d/$USER/10-$FQDN.conf"
+else
+	echo "Exists /etc/nginx/sites.d/$USER/10-$FQDN.conf"
+fi
+
+if [ ! -e /home/$USER/$FQDN/public/index.html ]; then
+	echo "Edit your index.html" > /home/$USER/$FQDN/public/index.html
+	chown $USER:$USER /home/$USER/$FQDN/public/index.html
+	echo "Created /home/$USER/$FQDN/public/index.html"
+else
+	echo "Exists /home/$USER/$FQDN/public/index.html"
+fi
+
+/etc/init.d/nginx reload 

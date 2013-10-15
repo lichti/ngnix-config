@@ -1,0 +1,33 @@
+#!/bin/bash
+
+if [ -z $1 ] || [ -z $2 ] || [ -z $3 ]; then 
+  echo "Ex: command username fqdn dest"
+  exit 1
+fi
+
+USER=$1
+FQDN=$2
+DEST=$3
+
+if [ ! -d /home/$USER ] && [ -z $(grep "$USER:" /etc/passwd) ]; then
+  echo "This account does not exist"
+  echo "Use the command newaccount"
+  exit 1
+fi
+
+if [ ! -e /etc/nginx/sites.d/$USER/20-$FQDN.conf ]; then 
+echo "
+server { 
+	listen       80;
+	server_name  $FQDN;
+	rewrite     ^ \$scheme://$DEST\$request_uri permanent;
+	access_log   /home/$USER/log/$FQDN.error.log  main;
+	error_log    /home/$USER/log/$FQDN.access.log  main;
+}
+" > /etc/nginx/sites.d/$USER/20-$FQDN.conf
+	echo "Created /etc/nginx/sites.d/$USER/20-$FQDN.conf"
+else
+	echo "Exists /etc/nginx/sites.d/$USER/20-$FQDN.conf"
+fi
+
+/etc/init.d/nginx reload 

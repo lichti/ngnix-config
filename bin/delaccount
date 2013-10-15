@@ -1,0 +1,15 @@
+#!/bin/bash
+
+if [ -z $1 ]; then 
+  echo "Ex: command username"
+  exit 1
+fi
+
+USER=$1
+
+rm /etc/nginx/sites-enabled/500-$USER
+userdel -r $USER
+groupdel $USER
+rm -rf /etc/nginx/sites-available/500-$USER
+rm -rf /etc/nginx/sites.d/$USER
+

@@ -1,0 +1,52 @@
+#!/bin/bash
+
+if [ -z $1 ]; then 
+  echo "Ex: command username"
+  exit 1
+fi
+
+USER=$1
+
+if [ ! -d /home/$USER ] && [ -z $(grep "$USER:" /etc/passwd) ]; then
+        adduser $USER
+else
+        echo "$USER already exists"
+fi
+
+if [ ! -d /home/$USER/log ]; then
+        mkdir /home/$USER/log
+        echo "Created /home/$USER/log"
+else
+        echo "Exists /home/$USER/log"
+fi
+
+if [ ! -d /home/$USER/tmp ]; then
+        mkdir /home/$USER/tmp
+        echo "Created /home/$USER/tmp"
+else
+        echo "Exists /home/$USER/tmp"
+fi
+
+echo "Setting permissions"
+find /home/$USER -type d -exec chown $USER:$USER '{}' \;
+find /home/$USER -type f -exec chown $USER:$USER '{}' \;
+find /home/$USER -type d -exec chmod 770 '{}' \;
+find /home/$USER -type f -exec chmod 660 '{}' \;
+
+if [ ! -d /etc/nginx/sites.d/$USER ]; then
+        mkdir /etc/nginx/sites.d/$USER
+        echo "Created /etc/nginx/sites.d/$USER"
+else
+        echo "Exists /etc/nginx/sites.d/$USER"
+fi
+
+if [ ! -e /etc/nginx/sites-available/500-$USER ]; then
+        echo "include /etc/nginx/sites.d/$USER/*;" > /etc/nginx/sites-available/500-$USER
+        echo "Created /etc/nginx/sites-available/500-$USER"
+else
+        echo "Exists /etc/nginx/sites-available/500-$USER"
+fi
+
+gpasswd -a www-data $USER
+ln -s /etc/nginx/sites-available/500-$USER /etc/nginx/sites-enabled/500-$USER
+/etc/init.d/nginx reload

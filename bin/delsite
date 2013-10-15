@@ -1,0 +1,18 @@
+#!/bin/bash
+
+if [ -z $1 ] || [ -z $2 ]; then 
+  echo "Ex: command username fqdn"
+  exit 1
+fi
+
+USER=$1
+FQDN=$2
+
+rm -rf /etc/nginx/sites.d/$USER/10-$FQDN.conf
+rm -rf /home/$USER/$FQDN
+rm -rf /home/$USER/log/$FQDN.access.log
+rm -rf /home/$USER/log/$FQDN.error.log 
+
+/etc/init.d/nginx reload 
+
+
