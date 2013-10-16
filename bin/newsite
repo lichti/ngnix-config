@@ -75,4 +75,12 @@ else
 	echo "Exists /home/$USER/$FQDN/public/index.html"
 fi
 
+if [ ! -e /home/$USER/$FQDN/public/info.php ]; then
+	echo "<?php phpinfo(); ?>" > /home/$USER/$FQDN/public/info.php
+	chown $USER:$USER /home/$USER/$FQDN/public/info.php
+	echo "Created /home/$USER/$FQDN/public/info.php"
+else
+	echo "Exists /home/$USER/$FQDN/public/info.php"
+fi
+
 /etc/init.d/nginx reload 
