@@ -1,7 +1,10 @@
 #!/bin/bash
 
-BASE=($dirname $0)
+echo $0
 
+BASE=$(dirname $(dirname $0))
+
+echo $BASE
 if [ ! -d /opt/nginx-manager ]; then
 	mkdir -p /opt/nginx-manager
 	echo "Created /opt/nginx-manager."
@@ -17,7 +20,7 @@ else
 fi
 
 echo "Copying bin files."
-cp -f $BASE/../bin/* /opt/nginx-manager/
+cp -f $BASE/bin/* /opt/nginx-manager/bin
 
 echo "Creating synlinks to bin files."
 ln -s /opt/nginx-manager/bin/delaccount /usr/sbin/delaccount
