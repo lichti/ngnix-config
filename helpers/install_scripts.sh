@@ -1,0 +1,33 @@
+#!/bin/bash
+
+BASE=($dirname $0)
+
+if [ ! -d /opt/nginx-manager ]; then
+	mkdir -p /opt/nginx-manager
+	echo "Created /opt/nginx-manager."
+else
+	echo "/opt/nginx-manager already exists."
+fi
+
+if [ ! -d /opt/nginx-manager/bin ]; then
+	mkdir -p /opt/nginx-manager/bin
+	echo "Created /opt/nginx-manager/bin."
+else
+	echo "/opt/nginx-manager/bin already exists."
+fi
+
+echo "Copying bin files."
+cp -f $BASE/../bin/* /opt/nginx-manager/
+
+echo "Creating synlinks to bin files."
+ln -s /opt/nginx-manager/bin/delaccount /usr/sbin/delaccount
+ln -s /opt/nginx-manager/bin/delredirect /usr/sbin/delredirect
+ln -s /opt/nginx-manager/bin/delsite /usr/sbin/delsite
+ln -s /opt/nginx-manager/bin/newaccount /usr/sbin/newaccount
+ln -s /opt/nginx-manager/bin/newdomainkit /usr/sbin/newdomainkit
+ln -s /opt/nginx-manager/bin/newnet2ftp /usr/sbin/newnet2ftp
+ln -s /opt/nginx-manager/bin/newphpmyadmin /usr/sbin/newphpmyadmin
+ln -s /opt/nginx-manager/bin/newredirect /usr/sbin/newredirect
+ln -s /opt/nginx-manager/bin/newsite /usr/sbin/newsite
+
+echo "Install successful."
