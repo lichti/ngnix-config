@@ -1,0 +1,40 @@
+#!/bin/bash
+
+if [ -z $1 ] || [ -z $2 ]; then 
+  echo "Ex: command username domain"
+  exit 1
+fi
+
+USER=$1
+DOMAIN=$2
+PORT=$(($(id -u $USER)+9000))
+BASE=$(dirname $0)
+
+if [ ! -d /home/$USER ] && [ -z $(grep "$USER:" /etc/passwd) ]; then
+  echo "This account does not exist"
+  echo "Use the command newaccount"
+  exit 1
+fi
+
+if [ ! -e /etc/nginx/sites.d/$USER/10-www.$FQDN.conf ]; then 
+	$BASE/newsite $USER www.$DOMAIN
+	echo "www.$DOMAIN created"
+else
+	echo "www.$domain already exists"
+fi
+
+if [ ! -e /etc/nginx/sites.d/$USER/10-mysql.$FQDN.conf ]; then 
+	$BASE/newphpmyadmin $USER mysql.$DOMAIN
+	echo "mysql.$DOMAIN created"
+else
+	echo "mysql.$domain already exists"
+fi
+
+if [ ! -e /etc/nginx/sites.d/$USER/10-ftp.$FQDN.conf ]; then 
+	$BASE/newnet2ftp $USER ftp.$DOMAIN
+	echo "ftp.$DOMAIN created"
+else
+	echo "ftp.$domain already exists"
+fi
+
+/etc/init.d/nginx reload 
