@@ -74,3 +74,6 @@ gpasswd -a www-data $USER
 ln -s /etc/nginx/sites-available/500-$USER /etc/nginx/sites-enabled/500-$USER
 /etc/init.d/nginx reload
 /etc/init.d/php5-fpm reload
+
+
+

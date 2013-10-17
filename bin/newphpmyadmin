@@ -1,0 +1,50 @@
+#!/bin/bash
+
+if [ -z $1 ] || [ -z $2 ]; then 
+  echo "Ex: command username fqdn"
+  exit 1
+fi
+
+USER=$1
+FQDN=$2
+PORT=$(($(id -u $USER)+9000))
+
+if [ ! -d /home/$USER ] && [ -z $(grep "$USER:" /etc/passwd) ]; then
+  echo "This account does not exist"
+  echo "Use the command newaccount"
+  exit 1
+fi
+
+if [ ! -e /etc/nginx/sites.d/$USER/10-$FQDN.conf ]; then 
+echo "
+server { 
+	listen       80;
+	server_name  $FQDN;
+	access_log   /home/$USER/log/$FQDN.error.log  combined;
+	error_log    /home/$USER/log/$FQDN.access.log  warn;
+        root /usr/local/share/phpmyadmin;
+        index index.html index.htm index.php;
+
+	location / {
+		try_files \$uri \$uri/ /index.html;
+	}
+
+	location ~ \.php$ {
+		try_files \$uri =404;
+		fastcgi_split_path_info ^(.+\.php)(/.+)\$;
+		fastcgi_pass 127.0.0.1:$PORT;
+		fastcgi_index index.php;
+		include fastcgi_params;
+	}
+
+	location ~ /\.ht {
+		deny all;
+	}
+}
+" > /etc/nginx/sites.d/$USER/10-$FQDN.conf
+	echo "Created /etc/nginx/sites.d/$USER/10-$FQDN.conf"
+else
+	echo "Exists /etc/nginx/sites.d/$USER/10-$FQDN.conf"
+fi
+
+/etc/init.d/nginx reload 
