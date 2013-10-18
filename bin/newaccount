@@ -73,6 +73,11 @@ else
 fi
 
 gpasswd -a www-data $USER
+
+if [ $(grep rvm /etc/gpasswd | wc -l) -eq 1 ];then
+	usermod -aG rvm $USER
+fi
+
 ln -s /etc/nginx/sites-available/500-$USER /etc/nginx/sites-enabled/500-$USER
 /etc/init.d/nginx reload
 /etc/init.d/php5-fpm reload
