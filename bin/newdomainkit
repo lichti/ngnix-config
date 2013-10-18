@@ -16,25 +16,32 @@ if [ ! -d /home/$USER ] && [ -z $(grep "$USER:" /etc/passwd) ]; then
   exit 1
 fi
 
-if [ ! -e /etc/nginx/sites.d/$USER/10-www.$FQDN.conf ]; then 
+if [ ! -e /etc/nginx/sites.d/$USER/10-www.$DOMAIN.conf ]; then 
 	$BASE/newsite $USER www.$DOMAIN
 	echo "www.$DOMAIN created"
 else
-	echo "www.$domain already exists"
+	echo "www.$DOMAIN already exists"
 fi
 
-if [ ! -e /etc/nginx/sites.d/$USER/10-mysql.$FQDN.conf ]; then 
+if [ ! -e /etc/nginx/sites.d/$USER/20-$DOMAIN.conf ]; then 
+	$BASE/newredirect $USER $DOMAIN www.$DOMAIN
+	echo "$DOAMIN redirect to www.$DOMAIN created"
+else
+	echo "$DOMAIN redirect already exists"
+fi
+
+if [ ! -e /etc/nginx/sites.d/$USER/10-mysql.$DOMAIN.conf ]; then 
 	$BASE/newphpmyadmin $USER mysql.$DOMAIN
 	echo "mysql.$DOMAIN created"
 else
-	echo "mysql.$domain already exists"
+	echo "mysql.$DOMAIN already exists"
 fi
 
-if [ ! -e /etc/nginx/sites.d/$USER/10-ftp.$FQDN.conf ]; then 
+if [ ! -e /etc/nginx/sites.d/$USER/10-ftp.$DOMAIN.conf ]; then 
 	$BASE/newnet2ftp $USER ftp.$DOMAIN
 	echo "ftp.$DOMAIN created"
 else
-	echo "ftp.$domain already exists"
+	echo "ftp.$DOMAIN already exists"
 fi
 
 /etc/init.d/nginx reload 
