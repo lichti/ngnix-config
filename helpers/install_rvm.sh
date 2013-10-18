@@ -4,4 +4,4 @@
 
 source /etc/profile.d/rvm.sh
 
-
+rvm --debug requirements
