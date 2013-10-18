@@ -46,7 +46,7 @@ fi
 
 /etc/init.d/nginx reload 
 
-echo << EOF
+cat << EOF
 ---------- Details ----------
 
 Site: http://www.$DOMAIN
