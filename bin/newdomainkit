@@ -45,3 +45,15 @@ else
 fi
 
 /etc/init.d/nginx reload 
+
+echo << EOF
+---------- Details ----------
+
+Site: http://www.$DOMAIN
+Redirect: htpp://$DOMAIN => http://www.$DOMAIN
+Webftp: http://ftp.$DOMAIN
+phpMyAdmin: http://mysql.$DOMAIN
+FTP: ftp://ftp.$DOMAIN
+
+-----------------------------
+EOF
