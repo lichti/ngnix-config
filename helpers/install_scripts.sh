@@ -1,7 +1,5 @@
 #!/bin/bash
 
-echo $0
-
 BASE=$(dirname $(dirname $0))
 
 echo $BASE
@@ -23,14 +21,14 @@ echo "Copying bin files."
 cp -f $BASE/bin/* /opt/nginx-manager/bin
 
 echo "Creating synlinks to bin files."
-ln -s /opt/nginx-manager/bin/delaccount /usr/sbin/delaccount
-ln -s /opt/nginx-manager/bin/delredirect /usr/sbin/delredirect
-ln -s /opt/nginx-manager/bin/delsite /usr/sbin/delsite
-ln -s /opt/nginx-manager/bin/newaccount /usr/sbin/newaccount
-ln -s /opt/nginx-manager/bin/newdomainkit /usr/sbin/newdomainkit
-ln -s /opt/nginx-manager/bin/newnet2ftp /usr/sbin/newnet2ftp
-ln -s /opt/nginx-manager/bin/newphpmyadmin /usr/sbin/newphpmyadmin
-ln -s /opt/nginx-manager/bin/newredirect /usr/sbin/newredirect
-ln -s /opt/nginx-manager/bin/newsite /usr/sbin/newsite
+ln -fs /opt/nginx-manager/bin/delaccount /usr/sbin/delaccount
+ln -fs /opt/nginx-manager/bin/delredirect /usr/sbin/delredirect
+ln -fs /opt/nginx-manager/bin/delsite /usr/sbin/delsite
+ln -fs /opt/nginx-manager/bin/newaccount /usr/sbin/newaccount
+ln -fs /opt/nginx-manager/bin/newdomainkit /usr/sbin/newdomainkit
+ln -fs /opt/nginx-manager/bin/newnet2ftp /usr/sbin/newnet2ftp
+ln -fs /opt/nginx-manager/bin/newphpmyadmin /usr/sbin/newphpmyadmin
+ln -fs /opt/nginx-manager/bin/newredirect /usr/sbin/newredirect
+ln -fs /opt/nginx-manager/bin/newsite /usr/sbin/newsite
 
 echo "Install successful."
