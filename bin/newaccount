@@ -9,10 +9,12 @@ USER=$1
 
 if [ ! -d /home/$USER ] && [ -z $(grep "$USER:" /etc/passwd) ]; then
         #adduser $USER
+	PASS=$(cat /dev/urandom | tr -cd "[:alnum:]" | head -c 10)
 	useradd -m -s /bin/bash $USER
+	echo -e "$PASS\n$PASS\n" | passwd $USER
 	PORT=$(($(id -u $USER)+9000))
 	usermod -c "type=php,port=$PORT)" $USER
-	passwd $USER
+#	passwd $USER
 else
         echo "$USER already exists"
 	exit 1
@@ -75,5 +77,5 @@ ln -s /etc/nginx/sites-available/500-$USER /etc/nginx/sites-enabled/500-$USER
 /etc/init.d/nginx reload
 /etc/init.d/php5-fpm reload
 
-
+echo -e "\n\n USER: $USER - PASS: $PASS \n\n"
 
