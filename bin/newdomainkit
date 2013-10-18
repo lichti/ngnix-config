@@ -50,7 +50,7 @@ cat << EOF
 ---------- Details ----------
 
 Site: http://www.$DOMAIN
-Redirect: htpp://$DOMAIN => http://www.$DOMAIN
+Redirect: http://$DOMAIN => http://www.$DOMAIN
 Webftp: http://ftp.$DOMAIN
 phpMyAdmin: http://mysql.$DOMAIN
 FTP: ftp://ftp.$DOMAIN
