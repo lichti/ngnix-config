@@ -30,5 +30,9 @@ ln -fs /opt/nginx-manager/bin/newnet2ftp /usr/sbin/newnet2ftp
 ln -fs /opt/nginx-manager/bin/newphpmyadmin /usr/sbin/newphpmyadmin
 ln -fs /opt/nginx-manager/bin/newredirect /usr/sbin/newredirect
 ln -fs /opt/nginx-manager/bin/newsite /usr/sbin/newsite
+ln -fs /opt/nginx-manager/bin/newgmail /usr/sbin/newgmail
+ln -fs /opt/nginx-manager/bin/newgdocs /usr/sbin/newgdocs
+ln -fs /opt/nginx-manager/bin/newgcalendar /usr/sbin/newgcalendar
+ln -fs /opt/nginx-manager/bin/newgapps /usr/sbin/newgapps
 
 echo "Install successful."
