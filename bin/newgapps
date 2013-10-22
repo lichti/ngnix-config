@@ -1,0 +1,53 @@
+#!/bin/bash
+
+if [ -z $1 ] || [ -z $2 ]; then 
+  echo "Ex: command username domain"
+  exit 1
+fi
+
+USER=$1
+DOMAIN=$2
+DOCS=docs.$DOMAIN
+MAIL=webmail.$DOMAIN
+CALENDAR=calendario.$DOMAIN
+BASE=$(dirname $0)
+
+if [ ! -d /home/$USER ] && [ -z $(grep "$USER:" /etc/passwd) ]; then
+  echo "This account does not exist"
+  echo "Use the command newaccount"
+  exit 1
+fi
+
+if [ ! -e /etc/nginx/sites.d/$USER/20-$DOCS.conf ]; then 
+	$BASE/newgdocs $USER $DOCS $DOMAIN
+	echo "$DOCS created"
+else
+	echo "$DOCS already exists"
+fi
+
+if [ ! -e /etc/nginx/sites.d/$USER/20-$MAIL.conf ]; then 
+	$BASE/newgmail $USER $MAIL $DOMAIN
+	echo "$MAIL created"
+else
+	echo "$MAIL already exists"
+fi
+
+if [ ! -e /etc/nginx/sites.d/$USER/20-$CALENDAR.conf ]; then 
+	$BASE/newgcalendar $USER $CALENDAR $DOMAIN
+	echo "$CALENDAR created"
+else
+	echo "$CALENDAR already exists"
+fi
+
+/etc/init.d/nginx reload 
+
+cat << EOF
+---------- Details ----------
+
+Google docs : http://$DOCS
+Google gmail: http://$MAIL
+Google calendar: http://$CALENDAR
+
+-----------------------------
+EOF
+
